@@ -46,7 +46,7 @@ func createResource(resp http.ResponseWriter, req *http.Request) {
 	}
 	respD := &createResourceResp{
 		Id:      "1",
-		Config:  map[string]string{"MYADDON_URL": "https://kensa-create-go.com/resources/1"},
+		Config:  map[string]string{"MY_SHA_URL": "https://my-sha.herokuapp.com/resources/1"},
 		Message: "All set up!"}
 	writeJson(resp, respD)
 }
@@ -69,7 +69,7 @@ func updateResource(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 	respD := &updateResourceResp{
-		Config:  map[string]string{"MYADDON_URL": "https://kensa-create-go.com/resources/1"},
+		Config:  map[string]string{"MY_SHA_URL": "https://my-sha.herokuapp.com/resources/1"},
 		Message: "All updated!"}
 	writeJson(resp, respD)
 }
@@ -108,7 +108,7 @@ func createSession(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 	http.SetCookie(resp, &http.Cookie{
-		Name: "heroku-nav-data",
+		Name:  "heroku-nav-data",
 		Value: navData})
 	http.Redirect(resp, req, "/", 302)
 }
