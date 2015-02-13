@@ -1,1 +1,1 @@
-web: kensa-create-go
+web: sha
