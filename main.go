@@ -1,8 +1,8 @@
 package main
 
 import (
-	"code.google.com/p/gorilla/mux"
 	"fmt"
+	"github.com/gorilla/mux"
 	"net/http"
 	"strconv"
 	"time"
