@@ -41,16 +41,32 @@ type hookResourceResp struct {
 }
 
 func hookResource(resp http.ResponseWriter, req *http.Request) {
-	// if !ensureAuth(resp, req, herokuAuth) {
-	// 	return
-	// }
 	reqD := &hookResourceReq{}
 	if !readJson(resp, req, reqD) {
 		return
 	}
-	fmt.Println("request was %v", reqD)
-	respD := &hookResourceResp{
-		Message: "OK!"}
+	fmt.Println("request was", reqD)
+
+	vars := mux.Vars(req)
+	id := vars["id"]
+
+	fmt.Println("request-id", id)
+
+	var repo Repo
+	err := dbmap.SelectOne(&repo, "select * from repos where token=$1", id)
+	if err != nil {
+		fmt.Println("did not find record: ", err, id)
+		return
+	}
+	fmt.Println("repo", repo)
+
+	repo.Revision = reqD.Head
+
+	count, err := dbmap.Update(&repo)
+	checkErr(err, "Update failed")
+	fmt.Println("Rows updated:", count)
+
+	respD := &hookResourceResp{Message: "OK!"}
 	writeJson(resp, respD)
 }
 
@@ -81,7 +97,7 @@ func createResource(resp http.ResponseWriter, req *http.Request) {
 
 	respD := &createResourceResp{
 		Id:      "1",
-		Config:  map[string]string{"MY_SHA_URL": "https://my-sha.herokuapp.com/resources/" + repo.App},
+		Config:  map[string]string{"MY_SHA_URL": "https://my-sha.herokuapp.com/resources/" + repo.Token},
 		Message: "All set up!"}
 	writeJson(resp, respD)
 }
@@ -151,7 +167,7 @@ func createSession(resp http.ResponseWriter, req *http.Request) {
 func router() *mux.Router {
 	router := mux.NewRouter()
 	router.HandleFunc("/", static).Methods("GET")
-	router.HandleFunc("/hook", hookResource).Methods("POST")
+	router.HandleFunc("/hook/{id}", hookResource).Methods("POST")
 	router.HandleFunc("/heroku/resources", createResource).Methods("POST")
 	router.HandleFunc("/heroku/resources/{id}", updateResource).Methods("PUT")
 	router.HandleFunc("/heroku/resources/{id}", destroyResource).Methods("DELETE")
