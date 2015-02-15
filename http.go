@@ -83,6 +83,7 @@ func readForm(resp http.ResponseWriter, req *http.Request) bool {
 func readJson(resp http.ResponseWriter, req *http.Request, reqD interface{}) bool {
 	err := json.NewDecoder(req.Body).Decode(reqD)
 	if err != nil {
+		fmt.Println("could not parse json", err.Error())
 		resp.WriteHeader(400)
 		resp.Write([]byte("{message: \"Invalid body\"}"))
 		return false
