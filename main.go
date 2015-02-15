@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/gorilla/mux"
+	"gopkg.in/gorp.v1"
 	"net/http"
 	"strconv"
 	"time"
@@ -23,6 +24,7 @@ func notFound(res http.ResponseWriter, req *http.Request) {
 }
 
 var herokuAuth authenticator
+var dbmap *gorp.DbMap
 
 // https://devcenter.heroku.com/articles/deploy-hooks#http-post-hook
 type hookResourceReq struct {
@@ -72,9 +74,14 @@ func createResource(resp http.ResponseWriter, req *http.Request) {
 	if !readJson(resp, req, reqD) {
 		return
 	}
+	repo := newRepo(reqD.HerokuId)
+
+	err := dbmap.Insert(&repo)
+	checkErr(err, "Insert failed")
+
 	respD := &createResourceResp{
 		Id:      "1",
-		Config:  map[string]string{"MY_SHA_URL": "https://my-sha.herokuapp.com/resources/1"},
+		Config:  map[string]string{"MY_SHA_URL": "https://my-sha.herokuapp.com/resources/" + repo.App},
 		Message: "All set up!"}
 	writeJson(resp, respD)
 }
@@ -154,6 +161,9 @@ func router() *mux.Router {
 }
 
 func main() {
+	dbmap = initDb()
+	defer dbmap.Db.Close()
+
 	logs := make(chan string, 10000)
 	go runLogging(logs)
 
