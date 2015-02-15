@@ -46,6 +46,7 @@ func revisionResource(resp http.ResponseWriter, req *http.Request) {
 }
 
 // https://devcenter.heroku.com/articles/deploy-hooks#http-post-hook
+// heroku addons:add deployhooks:http --url=https://my-sha.herokuapp.com/hook/c271c360-917d-45ec-60cd-9347ae028b31
 type hookResourceReq struct {
 	App      string `json:"app"`
 	User     string `json:"user"`
