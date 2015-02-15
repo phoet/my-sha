@@ -3,7 +3,6 @@ package main
 import (
 	"database/sql"
 	_ "github.com/lib/pq"
-	// _ "github.com/mattn/go-sqlite3"
 	"gopkg.in/gorp.v1"
 	"log"
 	"time"
@@ -45,18 +44,30 @@ import (
 // 	log.Println("Done!")
 // }
 
+func (i *Repo) PreInsert(s gorp.SqlExecutor) error {
+	i.Created = time.Now()
+	i.Updated = i.Created
+	return nil
+}
+
+func (i *Repo) PreUpdate(s gorp.SqlExecutor) error {
+	i.Updated = time.Now()
+	return nil
+}
+
 type Repo struct {
 	Id       int64 `db:"id"`
 	App      string
 	Revision string
 	Token    string
-	Created  int64
+	Created  time.Time
+	Updated  time.Time
 }
 
 func newRepo(app string) Repo {
 	return Repo{
-		Created: time.Now().UnixNano(),
-		App:     app,
+		App:   app,
+		Token: generateUUID(),
 	}
 }
 

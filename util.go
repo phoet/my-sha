@@ -3,6 +3,7 @@ package main
 import (
 	"crypto/sha1"
 	"fmt"
+	"github.com/nu7hatch/gouuid"
 	"os"
 )
 
@@ -25,4 +26,12 @@ func sha1String(s string) string {
 	h.Write([]byte(s))
 	bs := h.Sum(nil)
 	return fmt.Sprintf("%x", bs)
+}
+
+func generateUUID() string {
+	u4, err := uuid.NewV4()
+	if err != nil {
+		panic("error: " + err.Error())
+	}
+	return u4.String()
 }
