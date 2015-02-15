@@ -1,0 +1,3 @@
+#! /bin/sh
+
+curl -X GET http://localhost:5000/revision/184846c2-6f4a-4e45-680c-cc227779c34a

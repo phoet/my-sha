@@ -26,6 +26,25 @@ func notFound(res http.ResponseWriter, req *http.Request) {
 var herokuAuth authenticator
 var dbmap *gorp.DbMap
 
+type revisionResourceResp struct {
+	Revision string `json:"revision"`
+}
+
+func revisionResource(resp http.ResponseWriter, req *http.Request) {
+	vars := mux.Vars(req)
+	id := vars["id"]
+
+	var repo Repo
+	err := dbmap.SelectOne(&repo, "select * from repos where token=$1", id)
+	if err != nil {
+		fmt.Println("did not find record: ", err, id)
+		return
+	}
+
+	respD := &revisionResourceResp{Revision: repo.Revision}
+	writeJson(resp, respD)
+}
+
 // https://devcenter.heroku.com/articles/deploy-hooks#http-post-hook
 type hookResourceReq struct {
 	App      string `json:"app"`
@@ -167,6 +186,7 @@ func createSession(resp http.ResponseWriter, req *http.Request) {
 func router() *mux.Router {
 	router := mux.NewRouter()
 	router.HandleFunc("/", static).Methods("GET")
+	router.HandleFunc("/revision/{id}", revisionResource).Methods("GET")
 	router.HandleFunc("/hook/{id}", hookResource).Methods("POST")
 	router.HandleFunc("/heroku/resources", createResource).Methods("POST")
 	router.HandleFunc("/heroku/resources/{id}", updateResource).Methods("PUT")
