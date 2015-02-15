@@ -1,0 +1,4 @@
+#! /bin/sh
+
+# -H "Authorization: Basic"
+curl -X POST http://localhost:5000/hook -d "{\"app\":\"test-app\",\"user\":\"test_user@heroku.com\",\"url\":\"http://test-app.herokuapp.com\",\"head\":\"0b5fb19\",\"head_long\":\"0b5fb19f982713183e27abb3a7231018169a150d\",\"git_log\":\"*Sample commit message\"}"

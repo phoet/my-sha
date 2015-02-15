@@ -24,6 +24,34 @@ func notFound(res http.ResponseWriter, req *http.Request) {
 
 var herokuAuth authenticator
 
+// https://devcenter.heroku.com/articles/deploy-hooks#http-post-hook
+type hookResourceReq struct {
+	App      string `json:"app"`
+	User     string `json:"user"`
+	Url      string `json:"url"`
+	Head     string `json:"head"`
+	HeadLong string `json:"head_long"`
+	GitLog   string `json:"git_log"`
+}
+
+type hookResourceResp struct {
+	Message string `json:"message"`
+}
+
+func hookResource(resp http.ResponseWriter, req *http.Request) {
+	// if !ensureAuth(resp, req, herokuAuth) {
+	// 	return
+	// }
+	reqD := &hookResourceReq{}
+	if !readJson(resp, req, reqD) {
+		return
+	}
+	fmt.Println("request was %v", reqD)
+	respD := &hookResourceResp{
+		Message: "OK!"}
+	writeJson(resp, respD)
+}
+
 type createResourceReq struct {
 	HerokuId    string            `json:"heroku_id"`
 	Plan        string            `json:"plan"`
@@ -116,6 +144,7 @@ func createSession(resp http.ResponseWriter, req *http.Request) {
 func router() *mux.Router {
 	router := mux.NewRouter()
 	router.HandleFunc("/", static).Methods("GET")
+	router.HandleFunc("/hook", hookResource).Methods("POST")
 	router.HandleFunc("/heroku/resources", createResource).Methods("POST")
 	router.HandleFunc("/heroku/resources/{id}", updateResource).Methods("PUT")
 	router.HandleFunc("/heroku/resources/{id}", destroyResource).Methods("DELETE")
