@@ -1,0 +1,7 @@
+#! /bin/sh
+
+exports=$(awk '{ print $1 }' .env)
+export $exports
+
+json='{"id":"184846c2-6f4a-4e45-680c-cc227779c34a","plan":"basic"}'
+curl -X PUT http://$HEROKU_USERNAME:$HEROKU_PASSWORD@localhost:5000/heroku/resources/184846c2-6f4a-4e45-680c-cc227779c34a -d $json
