@@ -1,5 +1,5 @@
 {
-	"ImportPath": "github.com/burn-notice/sha",
+	"ImportPath": "github.com/phoet/my-sha",
 	"GoVersion": "go1.3.1",
 	"Deps": [
 		{
