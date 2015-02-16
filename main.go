@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/gorilla/mux"
 	"gopkg.in/gorp.v1"
@@ -26,10 +27,6 @@ func notFound(res http.ResponseWriter, req *http.Request) {
 var herokuAuth authenticator
 var dbmap *gorp.DbMap
 
-type revisionResourceResp struct {
-	Revision string `json:"revision"`
-}
-
 func revisionResource(resp http.ResponseWriter, req *http.Request) {
 	vars := mux.Vars(req)
 	id := vars["id"]
@@ -41,8 +38,7 @@ func revisionResource(resp http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	respD := &revisionResourceResp{Revision: repo.Revision}
-	writeJson(resp, respD)
+	resp.Write([]byte(repo.Revision))
 }
 
 // https://devcenter.heroku.com/articles/deploy-hooks#http-post-hook
@@ -57,9 +53,6 @@ type hookResourceReq struct {
 }
 
 func hookResource(resp http.ResponseWriter, req *http.Request) {
-	readForm(resp, req)
-	git_log := req.FormValue("git_log")
-	fmt.Println("loooooooooooooog ", git_log)
 	reqD := &hookResourceReq{
 		App:      req.FormValue("app"),
 		User:     req.FormValue("user"),
@@ -69,28 +62,28 @@ func hookResource(resp http.ResponseWriter, req *http.Request) {
 		GitLog:   req.FormValue("git_log"),
 	}
 
-	fmt.Println("request was", reqD)
-
 	vars := mux.Vars(req)
 	id := vars["id"]
 
 	fmt.Println("request-id", id)
 
-	var repo Repo
-	err := dbmap.SelectOne(&repo, "select * from repos where token=$1", id)
-	if err != nil {
-		fmt.Println("did not find record: ", err, id)
-		return
-	}
-	fmt.Println("repo", repo)
+	repo := findRepo(id)
 
-	repo.Revision = reqD.Head
-
+	jsonBody, err := json.Marshal(&reqD)
+	repo.Revision = string(jsonBody)
+	checkErr(err, "Marshal failed")
 	count, err := dbmap.Update(&repo)
 	checkErr(err, "Update failed")
 	fmt.Println("Rows updated:", count)
 
 	resp.Write([]byte("OK!"))
+}
+
+func findRepo(id string) Repo {
+	var repo Repo
+	err := dbmap.SelectOne(&repo, "select * from repos where token=$1", id)
+	checkErr(err, "Select failed")
+	return repo
 }
 
 type createResourceReq struct {
