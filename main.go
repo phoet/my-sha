@@ -50,33 +50,58 @@ type hookResourceReq struct {
 	Head     string
 	HeadLong string
 	GitLog   string
+	Release  string
 }
 
 func hookResource(resp http.ResponseWriter, req *http.Request) {
-	reqD := &hookResourceReq{
+	id := getId(req)
+	repo := findRepo(id)
+	reqD := buildRepo(req)
+	repo.Revision = toJSON(reqD)
+	update(repo)
+
+	ok(resp)
+}
+
+func buildRepo(req *http.Request) *hookResourceReq {
+	return &hookResourceReq{
 		App:      req.FormValue("app"),
 		User:     req.FormValue("user"),
 		Url:      req.FormValue("url"),
 		Head:     req.FormValue("head"),
 		HeadLong: req.FormValue("head_long"),
 		GitLog:   req.FormValue("git_log"),
+		Release:  req.FormValue("release"),
 	}
+}
 
+func ok(resp http.ResponseWriter) {
+	resp.Write([]byte("OK!"))
+}
+
+func delete(repo Repo) {
+	count, err := dbmap.Delete(repo)
+	fmt.Println("Rows updated:", count)
+	checkErr(err, "Delete failed")
+}
+
+func update(repo Repo) {
+	count, err := dbmap.Update(&repo)
+	fmt.Println("Rows updated:", count)
+	checkErr(err, "Update failed")
+}
+
+func toJSON(obj interface{}) string {
+	jsonBody, err := json.Marshal(&obj)
+	checkErr(err, "Marshal failed")
+	return string(jsonBody)
+}
+
+func getId(req *http.Request) string {
 	vars := mux.Vars(req)
 	id := vars["id"]
-
 	fmt.Println("request-id", id)
-
-	repo := findRepo(id)
-
-	jsonBody, err := json.Marshal(&reqD)
-	repo.Revision = string(jsonBody)
-	checkErr(err, "Marshal failed")
-	count, err := dbmap.Update(&repo)
-	checkErr(err, "Update failed")
-	fmt.Println("Rows updated:", count)
-
-	resp.Write([]byte("OK!"))
+	return id
 }
 
 func findRepo(id string) Repo {
@@ -149,8 +174,11 @@ func destroyResource(resp http.ResponseWriter, req *http.Request) {
 	if !ensureAuth(resp, req, herokuAuth) {
 		return
 	}
-	respD := &destroyResourceResp{
-		Message: "All torn down!"}
+	id := getId(req)
+	repo := findRepo(id)
+	delete(repo)
+
+	respD := &destroyResourceResp{Message: "All torn down!"}
 	writeJson(resp, &respD)
 }
 
