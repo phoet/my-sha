@@ -73,11 +73,15 @@ func notifyResource(repo Repo) {
 	url := "https://" + user + ":" + pass + "@api.heroku.com/vendor/apps/" + repo.App
 	fmt.Println("URL:>", url)
 
-	config := buildConfig(repo)
+	config := &notifyResourceResq{Config: buildConfig(repo)}
 	jsonBody, err := json.Marshal(&config)
 	check(err)
 	fmt.Println("json", string(jsonBody))
 	putJson(url, jsonBody)
+}
+
+type notifyResourceResq struct {
+	Config map[string]string `json:"config"`
 }
 
 func buildRepo(req *http.Request) *hookResourceReq {
