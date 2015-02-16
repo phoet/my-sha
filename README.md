@@ -6,7 +6,7 @@ get git information about your repository
 curl -Ss https://my-sha.herokuapp.com/revision/YOUR_API_TOKEN | jq '.'
 {
   "app": "my-sha",
-  "user": "phoetmail@googlemail.com",
+  "user": "phoet",
   "url": "http://my-sha.herokuapp.com",
   "head": "4f52cea",
   "prev_head": "",
