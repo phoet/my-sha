@@ -1,4 +1,0 @@
-#! /bin/sh
-
-payload="app=my-sha&user=phoetmail%40googlemail.com&url=http%3A%2F%2Fmy-sha.herokuapp.com&head=eaf6069&head_long=eaf6069&prev_head=&git_log=%20%20*%20phoet%3A%20log%20the%20body%0A%20%20*%20phoet%3A%20debug%20the%20json&release=v`date "+%s"`"
-curl -X POST http://localhost:5000/hook/184846c2-6f4a-4e45-680c-cc227779c34a -d $payload "$@"
