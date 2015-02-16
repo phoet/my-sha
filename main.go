@@ -48,6 +48,7 @@ type hookResourceReq struct {
 	User     string `json:"user"`
 	Url      string `json:"url"`
 	Head     string `json:"head"`
+	PrevHead string `json:"prev_head"`
 	HeadLong string `json:"head_long"`
 	GitLog   string `json:"git_log"`
 	Release  string `json:"release"`
@@ -71,6 +72,7 @@ func buildRepo(req *http.Request) *hookResourceReq {
 		User:     req.FormValue("user"),
 		Url:      req.FormValue("url"),
 		Head:     req.FormValue("head"),
+		PrevHead: req.FormValue("prev_head"),
 		HeadLong: req.FormValue("head_long"),
 		GitLog:   req.FormValue("git_log"),
 		Release:  req.FormValue("release"),
