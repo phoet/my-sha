@@ -1,18 +1,29 @@
-{{ define "title" }}my-sha {{ .App }}{{ end }}
+{{ define "title" }}my-sha {{ .Repo.App }}{{ end }}
 
 {{ define "content" }}
-<h1>Hello {{ .App }} ({{ .Id }})</h1>
+<h1>Hello {{ .Repo.App }} ({{ .Repo.Id }})</h1>
+<h2>Info</h2>
 <dl>
   <dt>Revision:</dt>
-  <dd>{{ .Revision }}</dd>
-
+  <dd>{{ .Repo.Revision }}</dd>
   <dt>Token:</dt>
-  <dd>{{ .Token }}</dd>
-
+  <dd>{{ .Repo.Token }}</dd>
   <dt>Created:</dt>
-  <dd>{{ .Created }}</dd>
-
+  <dd>{{ .Repo.Created }}</dd>
   <dt>Updated:</dt>
-  <dd>{{ .Updated }}</dd>
+  <dd>{{ .Repo.Updated }}</dd>
+</dl>
+<h2>Environment</h2>
+<dl>
+  <dt>MY_SHA_DEPLOY_HOOK_URL:</dt>
+  <dd>{{ .Config.MY_SHA_DEPLOY_HOOK_URL }}</dd>
+  <dt>MY_SHA_REVISION:</dt>
+  <dd>{{ .Config.MY_SHA_REVISION }}</dd>
+  <dt>MY_SHA_REVISION_URL:</dt>
+  <dd>{{ .Config.MY_SHA_REVISION_URL }}</dd>
+  <dt>MY_SHA_TOKEN:</dt>
+  <dd>{{ .Config.MY_SHA_TOKEN }}</dd>
+  <dt>MY_SHA_URL:</dt>
+  <dd>{{ .Config.MY_SHA_URL }}</dd>
 </dl>
 {{ end }}

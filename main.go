@@ -20,11 +20,20 @@ func static(res http.ResponseWriter, req *http.Request) {
 	http.ServeFile(res, req, "public"+req.URL.Path)
 }
 
+type homeObj struct {
+	Config map[string]string
+	Repo   Repo
+}
+
 func homeResource(res http.ResponseWriter, req *http.Request) {
 	id := getId(req)
 	repo := findRepo(id)
+	home := &homeObj{
+		Repo:   repo,
+		Config: buildConfig(repo),
+	}
 
-	renderTemplate("index", repo, res)
+	renderTemplate("index", home, res)
 }
 
 func notFound(res http.ResponseWriter, req *http.Request) {
