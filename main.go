@@ -61,7 +61,23 @@ func hookResource(resp http.ResponseWriter, req *http.Request) {
 	repo.Revision = toJSON(reqD)
 	update(repo)
 
+	go notifyResource(repo)
+
 	ok(resp)
+}
+
+func notifyResource(repo Repo) {
+	user := mustGetenv("HEROKU_USERNAME")
+	pass := mustGetenv("HEROKU_PASSWORD")
+
+	url := "https://" + user + ":" + pass + "@api.heroku.com/vendor/apps/" + repo.App
+	fmt.Println("URL:>", url)
+
+	config := buildConfig(repo)
+	jsonBody, err := json.Marshal(&config)
+	check(err)
+	fmt.Println("json", string(jsonBody))
+	putJson(url, jsonBody)
 }
 
 func buildRepo(req *http.Request) *hookResourceReq {

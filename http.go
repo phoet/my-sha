@@ -1,9 +1,11 @@
 package main
 
 import (
+	"bytes"
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"net/http"
 	"strings"
 	"time"
@@ -99,4 +101,20 @@ func writeJson(resp http.ResponseWriter, respD interface{}) {
 	} else {
 		resp.Write(b)
 	}
+}
+
+func putJson(url string, jsonBody []byte) {
+	req, err := http.NewRequest("PUT", url, bytes.NewBuffer(jsonBody))
+	check(err)
+	req.Header.Set("Content-Type", "application/json")
+
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	check(err)
+	defer resp.Body.Close()
+
+	fmt.Println("response Status:", resp.Status)
+	body, err := ioutil.ReadAll(resp.Body)
+	check(err)
+	fmt.Println("response Body:", string(body))
 }
