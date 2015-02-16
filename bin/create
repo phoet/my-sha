@@ -1,3 +1,6 @@
 #! /bin/sh
 
-curl -X POST http://uschi:123@localhost:5000/heroku/resources -d "{\"heroku_id\":\"test-app\",\"plan\":\"basic\",\"callback_url\":\"http://test-app.herokuapp.com\"}"
+exports=$(awk '{ print $1 }' .env)
+export $exports
+
+curl -X POST http://$HEROKU_USERNAME:$HEROKU_PASSWORD@localhost:5000/heroku/resources -d "{\"heroku_id\":\"test-app\",\"plan\":\"basic\",\"callback_url\":\"http://test-app.herokuapp.com\"}"
