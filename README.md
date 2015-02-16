@@ -1,19 +1,29 @@
-## kensa-create-go
+# my-sha
 
-An add-on template app in Go, for use with [kensa](http://github.com/heroku/kensa).
+get git information about your repository
 
-### Usage
+```bash
+curl -Ss https://my-sha.herokuapp.com/revision/YOUR_API_TOKEN | jq '.'
+{
+  "app": "my-sha",
+  "user": "phoetmail@googlemail.com",
+  "url": "http://my-sha.herokuapp.com",
+  "head": "4f52cea",
+  "prev_head": "",
+  "head_long": "4f52cea",
+  "git_log": "",
+  "release": "v26"
+}
+```
 
-```console
-$ gem install kensa
-$ gem install foreman
+## usage
 
-$ kensa create my-addon --template go
-$ cd my-addon
-$ go get
-$ echo "web: my-addon" > Procfile
-$ foreman start
+install the addon from heroku
 
-$ cd my-addon
-$ kensa test all
+TODO (show how to do it and get the deploy-hook url)
+
+you gotta have [a heroku http deploy-hook](https://devcenter.heroku.com/articles/deploy-hooks#http-post-hook) setup that points to your my-sha endpoint:
+
+```bash
+heroku addons:add deployhooks:http --url=https://my-sha.herokuapp.com/hook/YOUR_API_TOKEN
 ```
