@@ -1,1 +1,1 @@
-web: sha
+web: my-sha
