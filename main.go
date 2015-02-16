@@ -48,23 +48,27 @@ func revisionResource(resp http.ResponseWriter, req *http.Request) {
 // https://devcenter.heroku.com/articles/deploy-hooks#http-post-hook
 // heroku addons:add deployhooks:http --url=https://my-sha.herokuapp.com/hook/c271c360-917d-45ec-60cd-9347ae028b31
 type hookResourceReq struct {
-	App      string `json:"app"`
-	User     string `json:"user"`
-	Url      string `json:"url"`
-	Head     string `json:"head"`
-	HeadLong string `json:"head_long"`
-	GitLog   string `json:"git_log"`
-}
-
-type hookResourceResp struct {
-	Message string `json:"message"`
+	App      string
+	User     string
+	Url      string
+	Head     string
+	HeadLong string
+	GitLog   string
 }
 
 func hookResource(resp http.ResponseWriter, req *http.Request) {
-	reqD := &hookResourceReq{}
-	if !readJson(resp, req, reqD) {
-		return
+	readForm(resp, req)
+	git_log := req.FormValue("git_log")
+	fmt.Println("loooooooooooooog ", git_log)
+	reqD := &hookResourceReq{
+		App:      req.FormValue("app"),
+		User:     req.FormValue("user"),
+		Url:      req.FormValue("url"),
+		Head:     req.FormValue("head"),
+		HeadLong: req.FormValue("head_long"),
+		GitLog:   req.FormValue("git_log"),
 	}
+
 	fmt.Println("request was", reqD)
 
 	vars := mux.Vars(req)
@@ -86,8 +90,7 @@ func hookResource(resp http.ResponseWriter, req *http.Request) {
 	checkErr(err, "Update failed")
 	fmt.Println("Rows updated:", count)
 
-	respD := &hookResourceResp{Message: "OK!"}
-	writeJson(resp, respD)
+	resp.Write([]byte("OK!"))
 }
 
 type createResourceReq struct {
