@@ -1,11 +1,9 @@
 package main
 
 import (
-	"bytes"
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"net/http"
 	"strings"
 	"time"
@@ -83,13 +81,7 @@ func readForm(resp http.ResponseWriter, req *http.Request) bool {
 }
 
 func readJson(resp http.ResponseWriter, req *http.Request, reqD interface{}) bool {
-	body, err := ioutil.ReadAll(req.Body)
-	if err != nil {
-		panic("err" + err.Error())
-	}
-	fmt.Println(string(body))
-
-	err = json.NewDecoder(bytes.NewReader(body)).Decode(reqD)
+	err := json.NewDecoder(req.Body).Decode(reqD)
 	if err != nil {
 		fmt.Println("could not parse json", err.Error())
 		resp.WriteHeader(400)

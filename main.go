@@ -56,6 +56,8 @@ type hookResourceReq struct {
 func hookResource(resp http.ResponseWriter, req *http.Request) {
 	id := getId(req)
 	repo := findRepo(id)
+	readForm(resp, req)
+	fmt.Println("Form:", req.Form)
 	reqD := buildRepo(req)
 	repo.Revision = toJSON(reqD)
 	update(repo)
@@ -64,7 +66,7 @@ func hookResource(resp http.ResponseWriter, req *http.Request) {
 }
 
 func buildRepo(req *http.Request) *hookResourceReq {
-	return &hookResourceReq{
+	hook := &hookResourceReq{
 		App:      req.FormValue("app"),
 		User:     req.FormValue("user"),
 		Url:      req.FormValue("url"),
@@ -73,6 +75,8 @@ func buildRepo(req *http.Request) *hookResourceReq {
 		GitLog:   req.FormValue("git_log"),
 		Release:  req.FormValue("release"),
 	}
+	fmt.Println("Hook:", hook)
+	return hook
 }
 
 func ok(resp http.ResponseWriter) {
