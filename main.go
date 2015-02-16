@@ -148,12 +148,13 @@ func createResource(resp http.ResponseWriter, req *http.Request) {
 }
 
 func buildConfig(repo Repo) map[string]string {
+	rootUrl := mustGetenv("ROOT_URL")
 	return map[string]string{
 		"MY_SHA_TOKEN":           repo.Token,
 		"MY_SHA_REVISION":        repo.Revision,
-		"MY_SHA_URL":             "https://my-sha.herokuapp.com/resources/" + repo.Token,
-		"MY_SHA_DEPLOY_HOOK_URL": "https://my-sha.herokuapp.com/hook/" + repo.Token,
-		"MY_SHA_REVISION_URL":    "https://my-sha.herokuapp.com/revision/" + repo.Token,
+		"MY_SHA_URL":             rootUrl + "resources/" + repo.Token,
+		"MY_SHA_DEPLOY_HOOK_URL": rootUrl + "hook/" + repo.Token,
+		"MY_SHA_REVISION_URL":    rootUrl + "revision/" + repo.Token,
 	}
 }
 
