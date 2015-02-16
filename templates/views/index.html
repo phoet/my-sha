@@ -2,6 +2,8 @@
 
 {{ define "content" }}
 <h1>Hello {{ .Repo.App }} ({{ .Repo.Id }})</h1>
+<h2>Config</h2>
+{{ "README.md" | markDown}}
 <h2>Info</h2>
 <dl>
   <dt>Revision:</dt>

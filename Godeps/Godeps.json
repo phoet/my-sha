@@ -20,6 +20,15 @@
 			"Rev": "179d4d0c4d8d407a32af483c2354df1d2c91e6c3"
 		},
 		{
+			"ImportPath": "github.com/russross/blackfriday",
+			"Comment": "v1.2-42-g77efab5",
+			"Rev": "77efab57b2f74dd3f9051c79752b2e8995c8b789"
+		},
+		{
+			"ImportPath": "github.com/shurcooL/sanitized_anchor_name",
+			"Rev": "9a8b7d4e8f347bfa230879db9d7d4e4d9e19f962"
+		},
+		{
 			"ImportPath": "gopkg.in/gorp.v1",
 			"Comment": "v1.7.1",
 			"Rev": "c87af80f3cc5036b55b83d77171e156791085e2e"

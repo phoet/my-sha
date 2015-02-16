@@ -5,6 +5,7 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
+	"github.com/russross/blackfriday"
 	"html/template"
 	"io/ioutil"
 	"net/http"
@@ -13,15 +14,24 @@ import (
 	"time"
 )
 
+func markDowner(filename string) template.HTML {
+	input, err := ioutil.ReadFile(filename)
+	check(err)
+	s := blackfriday.MarkdownCommon(input)
+	return template.HTML(s)
+}
+
 func renderTemplate(view string, obj interface{}, w http.ResponseWriter) {
 	lp := path.Join("templates", "layout.html")
 	fp := path.Join("templates/views", view+".html")
-	tmpl, err := template.ParseFiles(lp, fp)
+	tmpl, err := template.New("layout.html").Funcs(template.FuncMap{"markDown": markDowner}).ParseFiles(lp, fp)
+	// tmpl, err := template.ParseFiles(lp, fp)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-
+	// tmpl = template.Must(tmpl.Funcs(template.FuncMap{"markDown": markDowner}))
+	// tmpl = tmpl.Funcs(template.FuncMap{"markDown": markDowner})
 	if err := tmpl.Execute(w, obj); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
