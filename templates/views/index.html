@@ -1,0 +1,18 @@
+{{ define "title" }}my-sha {{ .App }}{{ end }}
+
+{{ define "content" }}
+<h1>Hello {{ .App }} ({{ .Id }})</h1>
+<dl>
+  <dt>Revision:</dt>
+  <dd>{{ .Revision }}</dd>
+
+  <dt>Token:</dt>
+  <dd>{{ .Token }}</dd>
+
+  <dt>Created:</dt>
+  <dd>{{ .Created }}</dd>
+
+  <dt>Updated:</dt>
+  <dd>{{ .Updated }}</dd>
+</dl>
+{{ end }}

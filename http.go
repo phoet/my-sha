@@ -5,11 +5,27 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
+	"html/template"
 	"io/ioutil"
 	"net/http"
+	"path"
 	"strings"
 	"time"
 )
+
+func renderTemplate(view string, obj interface{}, w http.ResponseWriter) {
+	lp := path.Join("templates", "layout.html")
+	fp := path.Join("templates/views", view+".html")
+	tmpl, err := template.ParseFiles(lp, fp)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	if err := tmpl.Execute(w, obj); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+}
 
 type statusCapturingResponseWriter struct {
 	status int

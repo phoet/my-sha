@@ -20,6 +20,13 @@ func static(res http.ResponseWriter, req *http.Request) {
 	http.ServeFile(res, req, "public"+req.URL.Path)
 }
 
+func homeResource(res http.ResponseWriter, req *http.Request) {
+	id := getId(req)
+	repo := findRepo(id)
+
+	renderTemplate("index", repo, res)
+}
+
 func notFound(res http.ResponseWriter, req *http.Request) {
 	http.ServeFile(res, req, "public/404.html")
 }
@@ -242,12 +249,13 @@ func createSession(resp http.ResponseWriter, req *http.Request) {
 	http.SetCookie(resp, &http.Cookie{
 		Name:  "heroku-nav-data",
 		Value: navData})
-	http.Redirect(resp, req, "/", 302)
+	http.Redirect(resp, req, "/"+id, 302)
 }
 
 func router() *mux.Router {
 	router := mux.NewRouter()
 	router.HandleFunc("/", static).Methods("GET")
+	router.HandleFunc("/{id}", homeResource).Methods("GET")
 	router.HandleFunc("/revision/{id}", revisionResource).Methods("GET")
 	router.HandleFunc("/hook/{id}", hookResource).Methods("POST")
 	router.HandleFunc("/heroku/resources", createResource).Methods("POST")
