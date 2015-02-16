@@ -142,17 +142,18 @@ func createResource(resp http.ResponseWriter, req *http.Request) {
 
 	respD := &createResourceResp{
 		Id:      repo.Token,
-		Config:  buildConfig(repo.Token),
+		Config:  buildConfig(repo),
 		Message: "All set up!"}
 	writeJson(resp, respD)
 }
 
-func buildConfig(token string) map[string]string {
+func buildConfig(repo Repo) map[string]string {
 	return map[string]string{
-		"MY_SHA_TOKEN":           token,
-		"MY_SHA_URL":             "https://my-sha.herokuapp.com/resources/" + token,
-		"MY_SHA_DEPLOY_HOOK_URL": "https://my-sha.herokuapp.com/hook/" + token,
-		"MY_SHA_REVISION_URL":    "https://my-sha.herokuapp.com/revision/" + token,
+		"MY_SHA_TOKEN":           repo.Token,
+		"MY_SHA_REVISION":        repo.Revision,
+		"MY_SHA_URL":             "https://my-sha.herokuapp.com/resources/" + repo.Token,
+		"MY_SHA_DEPLOY_HOOK_URL": "https://my-sha.herokuapp.com/hook/" + repo.Token,
+		"MY_SHA_REVISION_URL":    "https://my-sha.herokuapp.com/revision/" + repo.Token,
 	}
 }
 
@@ -176,7 +177,7 @@ func updateResource(resp http.ResponseWriter, req *http.Request) {
 	id := getId(req)
 	repo := findRepo(id)
 	respD := &updateResourceResp{
-		Config:  buildConfig(repo.Token),
+		Config:  buildConfig(repo),
 		Message: "All updated!"}
 	writeJson(resp, respD)
 }
