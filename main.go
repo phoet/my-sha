@@ -41,8 +41,6 @@ func revisionResource(resp http.ResponseWriter, req *http.Request) {
 	resp.Write([]byte(repo.Revision))
 }
 
-// https://devcenter.heroku.com/articles/deploy-hooks#http-post-hook
-// heroku addons:add deployhooks:http --url=https://my-sha.herokuapp.com/hook/c271c360-917d-45ec-60cd-9347ae028b31
 type hookResourceReq struct {
 	App      string `json:"app"`
 	User     string `json:"user"`
@@ -86,7 +84,7 @@ func ok(resp http.ResponseWriter) {
 }
 
 func delete(repo Repo) {
-	count, err := dbmap.Delete(repo)
+	count, err := dbmap.Delete(&repo)
 	fmt.Println("Rows updated:", count)
 	checkErr(err, "Delete failed")
 }
@@ -143,10 +141,19 @@ func createResource(resp http.ResponseWriter, req *http.Request) {
 	checkErr(err, "Insert failed")
 
 	respD := &createResourceResp{
-		Id:      "1",
-		Config:  map[string]string{"MY_SHA_URL": "https://my-sha.herokuapp.com/resources/" + repo.Token},
+		Id:      repo.Token,
+		Config:  buildConfig(repo.Token),
 		Message: "All set up!"}
 	writeJson(resp, respD)
+}
+
+func buildConfig(token string) map[string]string {
+	return map[string]string{
+		"MY_SHA_TOKEN":           token,
+		"MY_SHA_URL":             "https://my-sha.herokuapp.com/resources/" + token,
+		"MY_SHA_DEPLOY_HOOK_URL": "https://my-sha.herokuapp.com/hook/" + token,
+		"MY_SHA_REVISION_URL":    "https://my-sha.herokuapp.com/revision/" + token,
+	}
 }
 
 type updateResourceReq struct {
@@ -166,8 +173,10 @@ func updateResource(resp http.ResponseWriter, req *http.Request) {
 	if !readJson(resp, req, reqD) {
 		return
 	}
+	id := getId(req)
+	repo := findRepo(id)
 	respD := &updateResourceResp{
-		Config:  map[string]string{"MY_SHA_URL": "https://my-sha.herokuapp.com/resources/1"},
+		Config:  buildConfig(repo.Token),
 		Message: "All updated!"}
 	writeJson(resp, respD)
 }
