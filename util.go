@@ -4,12 +4,13 @@ import (
 	"crypto/sha1"
 	"fmt"
 	"github.com/nu7hatch/gouuid"
+	"log"
 	"os"
 )
 
 func check(err error) {
 	if err != nil {
-		panic(err)
+		log.Panicln(err)
 	}
 }
 
