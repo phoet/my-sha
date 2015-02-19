@@ -264,7 +264,7 @@ func createSession(resp http.ResponseWriter, req *http.Request) {
 func router() *mux.Router {
 	router := mux.NewRouter()
 	router.HandleFunc("/", static).Methods("GET")
-	router.HandleFunc("/{id}", homeResource).Methods("GET")
+	router.HandleFunc("/{id:\\w{8}?-\\w{4}?-\\w{4}?-\\w{4}?-\\w{12}?}", homeResource).Methods("GET")
 	router.HandleFunc("/revision/{id}", revisionResource).Methods("GET")
 	router.HandleFunc("/hook/{id}", hookResource).Methods("POST")
 	router.HandleFunc("/heroku/resources", createResource).Methods("POST")
