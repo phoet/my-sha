@@ -20,6 +20,10 @@ func static(res http.ResponseWriter, req *http.Request) {
 	http.ServeFile(res, req, "public"+req.URL.Path)
 }
 
+func ping(res http.ResponseWriter, req *http.Request) {
+	res.Write([]byte("pong"))
+}
+
 type homeObj struct {
 	Config map[string]string
 	Repo   Repo
@@ -264,6 +268,7 @@ func createSession(resp http.ResponseWriter, req *http.Request) {
 func router() *mux.Router {
 	router := mux.NewRouter()
 	router.HandleFunc("/", static).Methods("GET")
+	router.HandleFunc("/ping", ping).Methods("GET")
 	router.HandleFunc("/{id:\\w{8}?-\\w{4}?-\\w{4}?-\\w{4}?-\\w{12}?}", homeResource).Methods("GET")
 	router.HandleFunc("/revision/{id}", revisionResource).Methods("GET")
 	router.HandleFunc("/hook/{id}", hookResource).Methods("POST")
