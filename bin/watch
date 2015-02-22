@@ -1,0 +1,1 @@
+fswatch --recursive --one-per-batch *.go | xargs -n1 bin/run

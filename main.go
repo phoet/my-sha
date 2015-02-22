@@ -45,6 +45,7 @@ func notFound(res http.ResponseWriter, req *http.Request) {
 }
 
 var herokuAuth authenticator
+
 var dbmap *gorp.DbMap
 
 func revisionResource(resp http.ResponseWriter, req *http.Request) {
@@ -202,6 +203,7 @@ type updateResourceReq struct {
 	HerokuId string `json:"heroku_id"`
 	Plan     string `json:"plan"`
 }
+
 type updateResourceResp struct {
 	Config  map[string]string `json:"config"`
 	Message string            `json:"message"`
@@ -295,6 +297,7 @@ func main() {
 	handler := routerHandlerFunc(router())
 	handler = wrapLogging(handler, logs)
 
+	pid()
 	port := mustGetenv("PORT")
 	logs <- fmt.Sprintf("serve at=start port=%s", port)
 	err := http.ListenAndServe(":"+port, handler)

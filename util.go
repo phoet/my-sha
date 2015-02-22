@@ -4,14 +4,22 @@ import (
 	"crypto/sha1"
 	"fmt"
 	"github.com/nu7hatch/gouuid"
+	"io/ioutil"
 	"log"
 	"os"
+	"strconv"
 )
 
 func check(err error) {
 	if err != nil {
 		log.Panicln(err)
 	}
+}
+
+func pid() {
+	pid := os.Getpid()
+	err := ioutil.WriteFile(".pid", []byte(strconv.Itoa(pid)), 0644)
+	check(err)
 }
 
 func mustGetenv(k string) string {

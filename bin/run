@@ -3,4 +3,5 @@
 exports=$(awk '{ print $1 }' .env)
 export $exports
 
-go run util.go database.go http.go main.go
+cat .pid | xargs kill
+go run util.go database.go http.go main.go &
