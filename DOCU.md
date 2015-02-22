@@ -1,6 +1,6 @@
 [MY-SHA](http://addons.heroku.com/my-sha) is an add-on for accessing the current Git SHA of your application.
 
-Most of our applications depend on Git for version controll.
+Most of our applications depend on Git for version control.
 For debugging purposes, it is important to know which version is deployed in production.
 Because of that, most application developers have it embedded into the Sites HTML-source or the print it out in the logs
 when the app is requested with some debugging parameter.
