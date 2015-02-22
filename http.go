@@ -22,16 +22,15 @@ func markDowner(filename string) template.HTML {
 }
 
 func renderTemplate(view string, obj interface{}, w http.ResponseWriter) {
-	lp := path.Join("templates", "layout.html")
-	fp := path.Join("templates/views", view+".html")
-	tmpl, err := template.New("layout.html").Funcs(template.FuncMap{"markDown": markDowner}).ParseFiles(lp, fp)
-	// tmpl, err := template.ParseFiles(lp, fp)
+	tmpl, err := template.New("layout.html").Funcs(template.FuncMap{"markDown": markDowner}).ParseFiles(
+		path.Join("templates", "layout.html"),
+		path.Join("templates", "includes", "heroku.html"),
+		path.Join("templates", "views", view+".html"),
+	)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	// tmpl = template.Must(tmpl.Funcs(template.FuncMap{"markDown": markDowner}))
-	// tmpl = tmpl.Funcs(template.FuncMap{"markDown": markDowner})
 	if err := tmpl.Execute(w, obj); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}

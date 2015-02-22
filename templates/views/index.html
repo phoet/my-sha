@@ -1,31 +1,25 @@
 {{ define "title" }}my-sha {{ .Repo.App }}{{ end }}
 
 {{ define "content" }}
-<h1>Hello {{ .Repo.App }} ({{ .Repo.Id }})</h1>
-<h2>Config</h2>
-{{ "README.md" | markDown}}
-<h2>Info</h2>
-<dl>
-  <dt>Revision:</dt>
-  <dd>{{ .Repo.Revision }}</dd>
-  <dt>Token:</dt>
-  <dd>{{ .Repo.Token }}</dd>
-  <dt>Created:</dt>
-  <dd>{{ .Repo.Created }}</dd>
-  <dt>Updated:</dt>
-  <dd>{{ .Repo.Updated }}</dd>
-</dl>
-<h2>Environment</h2>
-<dl>
-  <dt>MY_SHA_DEPLOY_HOOK_URL:</dt>
-  <dd>{{ .Config.MY_SHA_DEPLOY_HOOK_URL }}</dd>
-  <dt>MY_SHA_REVISION:</dt>
-  <dd>{{ .Config.MY_SHA_REVISION }}</dd>
-  <dt>MY_SHA_REVISION_URL:</dt>
-  <dd>{{ .Config.MY_SHA_REVISION_URL }}</dd>
-  <dt>MY_SHA_TOKEN:</dt>
-  <dd>{{ .Config.MY_SHA_TOKEN }}</dd>
-  <dt>MY_SHA_URL:</dt>
-  <dd>{{ .Config.MY_SHA_URL }}</dd>
-</dl>
+<div class="page-header">
+  <h1>Hello {{ .Repo.App }}!</h1>
+  <p>Your application-token is <span class="label label-primary">{{ .Repo.Token }}</span></p>
+</div>
+
+<div class="page-header">
+  <h2>Quick Info:</h2>
+</div>
+<p>
+  Current Git information:
+  <div class="well">{{ .Repo.Revision }}</div>
+</p>
+<p>Deploy-hook URL: <span class="label label-primary">{{ .Config.MY_SHA_DEPLOY_HOOK_URL }}</span></p>
+<p>Revision URL: <span class="label label-primary">{{ .Config.MY_SHA_REVISION_URL }}</span></p>
+
+<div class="page-header">
+  <h2>Documentation</h2>
+</div>
+{{ "DOCU.md" | markDown}}
 {{ end }}
+
+
